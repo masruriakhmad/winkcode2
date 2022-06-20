@@ -38,8 +38,11 @@ class Curl {
     public function __call($method, $arguments) {
         if (in_array($method, ['simple_get', 'simple_post', 'simple_put', 'simple_delete', 'simple_patch'])) {
             // Take off the "simple_" and past get/post/put/delete/patch to _simple_call
+            //mengganti kata simple_ menjadi null (simple_get menjadi get)
             $verb = str_replace('simple_', '', $method);
+            //pelajari
             array_unshift($arguments, $verb);
+            //pelajari
             return call_user_func_array([$this, '_simple_call'], $arguments);
         }
     }

@@ -105,6 +105,8 @@ $arr_rpt = [
     <script src="<?=base_url()?>assets/js/angular-strap/angular-strap.tpl.min.js"></script>
     <script src="<?=base_url()?>assets/js/angular/dynamic-number.min.js?ver=2019.06.12')}}"></script>
     <link href="<?=base_url()?>assets/vendor/inspinia/css/overide.css" rel="stylesheet">
+    <!--Font Awesome Online-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome.min.css"/>
     <style>
     html {
         height: 100% !important;
@@ -185,15 +187,88 @@ lookup();
                             BAZ
                         </div>
                     </li>
+
+                    <?php
+//MENU DARI TABEL sy_menu
+//meng aray kan menu dari tabel sy menu yang merupakan parent menu atau nilai parent 0
+//select menu.nama menu where id_menu
+//coding untuk filter menu berdasar group user
+
+if($this->session->userdata('level') != 1){    
+$this->db->group_by('user_access.id_menu');
+$this->db->order_by('order_no','asc');
+$this->db->join('sy_menu','sy_menu.id_menu=user_access.id_menu');
+$this->db->where('sy_menu.parent',0);
+$this->db->where('user_access.is_allow',1);
+$this->db->where('user_access.id_group',$this->session->userdata('level'));
+$data_menu=$this->db->get('user_access')->result();
+}
+else{
+$data_menu=$this->db->order_by("order_no", "ASC")->get_where('sy_menu', array('parent' => 0,))->result();
+}
+foreach ($data_menu as $kmenu0 => $vmenu0) 
+    
+    {?>
+        <li class="<?=strtolower(activate_menu($vmenu0->note))?>">
+
+            <!--mengambil data field url yang berisi nama controler -->
+            <a href="<?=base_url()?><?=$vmenu0->url?>">
+
+                <!--mengambil data field icon yang berisi nama fa icon -->
+                <i class="fa <?=$vmenu0->icon?>"></i>
+                
+                <!--mengambil data field label yang berisi nama Menu -->
+                <span class="nav-label"><?=$vmenu0->label?></span>
+                <span class="label label-primary pull-right"></span>
+                <!--
+                <span class="fa arrow"> -->
+
+            </a>
+
+                <?php
+                //meng aray kan menu dari tabel sy menu yang merupakan parent menu atau nilai parent sesuai id menu 
+                if($this->session->userdata('level') != 1){  
+                $this->db->group_by('user_access.id_menu');
+                $this->db->order_by('order_no','asc');
+                $this->db->join('sy_menu','sy_menu.id_menu=user_access.id_menu');
+                $this->db->where('sy_menu.parent',$vmenu0->id_menu);
+                $this->db->where('user_access.is_allow',1);
+                $this->db->where('user_access.id_group',$this->session->userdata('level'));
+                $data_submenu=$this->db->get('user_access')->result();
+                }
+                else{
+                $data_submenu=$this->db->get_where('sy_menu', array('parent' => $vmenu0->id_menu))->result();
+                }
+                foreach ($data_submenu as $kmenu1 => $vmenu1) 
+                    
+                    {?>
+                   
+                   <ul class="nav nav-second-level">
+                         <li>
+                            <!-- ambil nama dari url menu yaitu controller-->
+                            <a href="<?=base_url()?><?=$vmenu1->url?>">
+                            <i class="fa <?=$vmenu1->icon?>"></i>
+                            <?=$vmenu1->label?>
+                         <!-- <span class="label label-primary pull-right">12</span> -->
+                     </a></li>
+                    </ul>
+                <?php }?>
+
+                </li>
+                <?php }?>
+
+                    <!--
                     <li><a href="<?=base_url()?>backend"><i class="fa fa-th-large"></i> <span
                                 class="nav-label">Beranda</span><span
                                 class="label label-primary pull-right"></span></a></li>
+                    -->
                     <?php foreach ($arr_root as $k => $v): ?>
 
                     <li class="<?=!is_allow($v[0]) ? 'hide' : ''?>"><a href="<?=base_url() . $v[1]?>"><i
                                 class="fa fa-<?=$v[3]?>"></i> <span class="nav-label"><?=$v[2]?></span><span
                                 class="label label-primary pull-right"></span></a></li>
                     <?php endforeach?>
+
                     <li class="<?=!is_allow("M_M_ASNAF") ? 'hide' : ''?>">
                         <a href="#"><i class="fa fa-database"></i> <span class="nav-label">Master</span> <span
                                 class="fa arrow"></span></a>
@@ -208,10 +283,12 @@ lookup();
                     </li>
                     </li>
                     </li>
+                    <!--
                     <li class="<?=!is_allow("M_KONSULTASI") ? 'hide' : ''?>">
                         <a href="<?=base_url()?>konsultasi"><i class="fa fa-send"></i><span
                                 class="nav-label">Konsultasi</span></a>
                     </li>
+                    
                     <li class="<?=!is_allow("M_BERTEMU") ? 'hide' : ''?>">
                         <a href="<?=base_url()?>bertemu"><i class="fa fa-send"></i><span
                                 class="nav-label">Bertemu</span></a>
@@ -220,7 +297,7 @@ lookup();
                         <a href="<?=base_url()?>ditanyakan"><i class="fa fa-send"></i><span
                                 class="nav-label">Sering Ditanyakan</span></a>
                     </li>
-
+                            
                     <li class="">
                         <?php if (is_allow('M_USERS')): ?>
                         <a href="index.html"><i class="fa fa-user"></i> <span class="nav-label">Pengguna</span> <span
@@ -233,6 +310,7 @@ lookup();
                             <li><a href="<?=base_url()?>master_access">Master Access</a></li>
                         </ul>
                     </li>
+                        
                     <li class="">
                         <?php if (is_allow('M_SY_CONFIG')): ?>
                         <a href="index.html"><i class="fa fa-wrench"></i> <span class="nav-label">Sistem</span> <span
@@ -242,15 +320,17 @@ lookup();
                         <ul class="nav nav-second-level">
                             <li><a href="<?=base_url()?>sy_config">Konfigurasi</a></li>
                             <li><a href="<?=base_url()?>kategori">Kategori</a></li>
+                            <li><a href="<?=base_url()?>sy_menu">Menu</a></li>
                         </ul>
                     </li>
-
+                        -->
                     <li class="">
-                        <a href="<?=base_url()?>proposal_h"><i class="fa fa-send"></i><span
+                        <a href="<?=base_url()?>Auth/logout"><i class="fa fa-sign-out"></i><span
                                 class="nav-label">Keluar</span></a>
                     </li>
                 </ul>
             </div>
+                        
         </nav>
         <div id="page-wrapper" class="gray-bg">
             <div class="row border-bottom">

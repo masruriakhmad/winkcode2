@@ -8,6 +8,7 @@ class Permasalahan extends CI_Controller
 {
     private $m;
     public function __construct()
+    
     {
         parent::__construct();
         is_logged();

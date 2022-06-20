@@ -1,5 +1,6 @@
 <!-- //Subscribe Youtube Channel Peternak Kode on https://youtube.com/c/peternakkode -->
 <!doctype html>
+<!-- tampilan untuk form list-->
 <div class="ibox float-e-margins" ng-show="f.tab=='list'">
     <div class="ibox-title">
         <div class="pull-right form-inline">
@@ -12,6 +13,8 @@
             <input type="text" ng-model="f.q" class="form-control input-sm" placeholder="" ng-enter ="getList()">
             <span class="input-group-addon pointer" ng-click="getList()">Cari</span>
         </div>
+
+        <!--Tampilan untuk daftar Konsultasi-->
         <div id="div1" class="table-responsive">
             <table ng-table="tableList" show-filter="false" class="table table-condensed table-bordered table-hover" style="white-space: nowrap;">
                 <tr ng-repeat="(k,v) in $data" class="pointer" ng-click="read(v.id)">
@@ -29,7 +32,11 @@
         </div>
     </div>
 </div>
+
+
+<!--tampilan untuk Form Input-->
 <div class="ibox float-e-margins" ng-show="f.tab=='frm'">
+
     <div class="ibox-title">
         <div class="pull-right form-inline">
             <button type="button" class="btn btn-sm btn-info" ng-click="f.tab='list'"><i class="fa fa-arrow-left"></i> Kembali</button>
@@ -53,9 +60,13 @@
                 <input type="email" ng-model="h.email" class="form-control input-sm">
                 <label title="nomor_telepon">Nomor Telepon</label>
                 <input type="text" ng-model="h.nomor_telepon" class="form-control input-sm numeric">
+                <label title="nomor_telepon">Upload File</label>
+                <input type="file" ng-model="h.nomor_telepon" class="form-control input-sm numeric">
+                
             </div>
-            <div class="col-sm-6">
 
+            <div class="col-sm-6">
+                <!--Fungsi Lookup menuju ke fungsi javascript lookup-->
                 <label title="skpd">SKPD/UKPD</label>
                 <div class="input-group">
                     <input type="text" ng-model="h.nm_skpd" class="form-control input-sm" placeholder="" readonly>
@@ -65,6 +76,14 @@
                 <div class="input-group">
                     <input type="text" ng-model="h.nm_permasalahan" class="form-control input-sm" placeholder="" readonly>
                     <span class="input-group-addon pointer" ng-click="lookup('permasalahan')">Cari</span>
+                </div>
+                <label title="permasalahan">Dropdown Permasalahan</label>
+                <div class="input-group">
+                    <select class="form-control input-sm" id="exampleFormControlSelect1" name="kategori">
+                    <?php foreach(get_data_kategori('agama') as $id_kat=>$cat_name) { ?>
+                    <option value="<?php echo $id_kat ?>"><?php echo $cat_name; ?></option>
+                    <?php }; ?> 
+                    </select>
                 </div>
                 <label title="uraian_permasalahan">Uraian Permasalahan</label>
                 <textarea ng-model="h.uraian_permasalahan" class="form-control input-sm" rows="4"></textarea>
@@ -78,23 +97,30 @@
         </div>
     </div>
 </div>
+
+
+<!--PELAJARI INTI DARI ANGULAR DISINI DAN PELAJARI DI CONTROLLER-->
 <script>
+
 app.controller('mainCtrl', ['$scope', '$http', 'NgTableParams', 'SfService', 'FileUploader', function($scope, $http, NgTableParams, SfService, FileUploader) {
-    SfService.setUrl("<?=base_url()?>konsultasi");
+    SfService.setUrl("<?=base_url()?>konsultasi"); //mengeset controller tujuan yaitu kontroler konsultasi
     $scope.f = { crud: 'c', tab: 'list', pk: 'id' };
     $scope.h = {};
 
+    //menu create form
     $scope.new = function() {
         $scope.f.tab = 'frm';
         $scope.f.crud = 'c';
         $scope.h = {tanggal:moment().format('YYYY/MM/DD')};
     }
 
+    //fungsi copy
     $scope.copy=function(){
         $scope.f.crud='c';
         $scope.h[$scope.f.pk]='';
     }
 
+    //menganggil fungsi getlist di controller
     $scope.getList = function() {
         $scope.tableList = new NgTableParams({}, {
             getData: function($defer, params) {
@@ -119,6 +145,7 @@ app.controller('mainCtrl', ['$scope', '$http', 'NgTableParams', 'SfService', 'Fi
         });
     }
 
+    //fungsi save memamnggil fungsi save di controller
     $scope.save = function() {
         if (SfFormValidate('.frmEntry') == false) {
             swal('', 'Data not valid', 'error');
@@ -132,6 +159,8 @@ app.controller('mainCtrl', ['$scope', '$http', 'NgTableParams', 'SfService', 'Fi
         });
     }
 
+
+    //fungsi read memamnggil fungsi read di controller
     $scope.read = function(id) {
         SfService.get(SfService.getUrl("/read/" + id), {}, function(jdata) {
             $scope.f.tab = 'frm';
@@ -140,7 +169,10 @@ app.controller('mainCtrl', ['$scope', '$http', 'NgTableParams', 'SfService', 'Fi
         });
     }
 
+    //fungsi del memamnggil fungsi delete di controller
     $scope.del = function(id) {
+
+        //percabangan fungsi dell
         if (id == undefined) {
             var id = $scope.h[$scope.f.pk];
         }
@@ -163,6 +195,7 @@ app.controller('mainCtrl', ['$scope', '$http', 'NgTableParams', 'SfService', 'Fi
             });
     }
 
+    //fungsi cetak
     $scope.prin = function(id) {
         if (id == undefined) {
             var id = $scope.h[$scope.f.pk];
@@ -170,6 +203,7 @@ app.controller('mainCtrl', ['$scope', '$http', 'NgTableParams', 'SfService', 'Fi
         window.open(SfService.getUrl('/prin') + "?id=" + encodeURI(id), 'print_' + id, 'width=950,toolbar=0,resizable=0,scrollbars=yes,height=520,top=100,left=100').focus();
     }
 
+    //fungsi lookup/pencarian (Angular)
     $scope.lookup = function(icase, fn) {
         switch (icase) {
             case 'skpd':
@@ -192,6 +226,7 @@ app.controller('mainCtrl', ['$scope', '$http', 'NgTableParams', 'SfService', 'Fi
         }
     }
 
+    //fungsi get list
     $scope.getList();
 
 }]);

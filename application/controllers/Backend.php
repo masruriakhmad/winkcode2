@@ -14,7 +14,7 @@ class Backend extends CI_Controller
     {
 
         $data = array(
-            'content' => 'backend/dashboard',
+            'content' => 'backend/dashboard_v2',
 
         );
         $this->load->view(layout(), $data);

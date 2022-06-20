@@ -11,9 +11,10 @@ class Konsultasi extends CI_Controller {
         is_logged();
         // sf_construct();
         $this->load->model('Konsultasi_model');
-        $this->m = new Konsultasi_model();
+        $this->m = new Konsultasi_model(); //membuat object m sebagai objek dari konsultasi model
     }
 
+    //fungsi index
     public function index() {
         $data = array(
             'content' => "backend/konsultasi/konsultasi_frm",
@@ -21,6 +22,8 @@ class Konsultasi extends CI_Controller {
         $this->load->view(layout(), $data);
     }
 
+
+    //Fungsi tampilan dari database
     public function getList() {
         $frm      = $this->input->get('frm');
         $q        = $this->input->get('q');
@@ -36,6 +39,7 @@ class Konsultasi extends CI_Controller {
         echo json_encode(compact(['total', 'page', 'limit', 'data', 'q']));
     }
 
+    //fungsi query list
     private function queryList(&$total, &$current, $page, $limit, $q, $arr_where) {
         $total = $this->db->from($this->m->table)
             ->like('id', $q)
@@ -51,6 +55,7 @@ class Konsultasi extends CI_Controller {
             ->limit($limit, ($page * $limit) - $limit)->order_by($this->m->id, $this->m->order)->get();
     }
 
+    //fungsi pencarian
     public function lookup() {
         $q        = $this->input->get('q');
         $order_by = $this->input->get('order_by');
@@ -68,6 +73,7 @@ class Konsultasi extends CI_Controller {
         $this->load->view('backend/lookup', compact(['start', 'total', 'limit', 'data', 'q']));
     }
 
+    //fungsi simpan
     public function save() {
         $req = json_decode(file_get_contents('php://input'));
         $h   = $req->h;
@@ -86,6 +92,7 @@ class Konsultasi extends CI_Controller {
         echo json_encode('Simpan data berhasil');
     }
 
+    //fungsi read data
     public function read($id) {
         $this->db->where($this->m->id, $id);
         $data = $this->db->get($this->m->table, 0, 1);
@@ -94,6 +101,7 @@ class Konsultasi extends CI_Controller {
         echo json_encode(compact(['h']));
     }
 
+    //fungsi delete
     public function delete($id) {
         $this->db->where($this->m->id, $id);
         $this->db->delete($this->m->table);
@@ -101,6 +109,7 @@ class Konsultasi extends CI_Controller {
         echo json_encode('Hapus data berhasil');
     }
 
+    // fungsi cetak
     public function prin() {
         $id = $this->input->get('id', TRUE);
         $this->db->where($this->m->id, $id);

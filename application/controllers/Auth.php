@@ -11,7 +11,7 @@ class Auth extends CI_Controller {
         $data = [
             // 'content'=>'frontend/login.php'
         ];
-        $this->load->view('frontend/login.php', $data);
+        $this->load->view('frontend/login_v15.php', $data);
     }
 
     public function login() {

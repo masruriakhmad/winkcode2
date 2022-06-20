@@ -19,6 +19,19 @@
             <input type="text" class="form-control" name="nm_access" id="nm_access" placeholder="Nm Access" value="<?php echo $nm_access; ?>" />
         </div>
 	    <div class="form-group">
+            <label for="varchar">Pilih Menu <?php echo form_error('nm_menu') ?></label>
+            <select type="text" class="form-control" name="id_menu" id="id_menu" placeholder="Pilih Menu" value="<?php echo $id_kecamatan; ?>" />
+                
+                <!-- <option value="<?php echo $id_menu;?>"><?php echo $nama_menu ?></option> -->
+
+                <?php foreach($id_menu as $row) { ?>
+                <option value="<?php echo $row->id_menu;?>">
+                    <?php echo $row->label ?>
+                    </option>
+                <?php }; ?>
+            </select>
+        </div>
+	    <div class="form-group">
             <label for="note">Note <?php echo form_error('note') ?></label>
             <textarea class="form-control" rows="3" name="note" id="note" placeholder="Note"><?php echo $note; ?></textarea>
         </div>

@@ -53,13 +53,13 @@
             <span class="focus-input100"></span>
             <span class="label-input100">Password</span>
           </div>
+          <?php if ($this->session->userdata('msgcaptcha') != '') {?>
+                <div class="alert alert-warning"><?=$this->session->userdata('msgcaptcha')?></div>
+          <?php }?>
           <div class="wrap-input100 validate-input" data-validate="Captcha wajib diisi">
             <input class="input100" type="text" name="cpt">
             <span class="focus-input100"></span>
-            <?php
-$cpt = generateCode();
-
-?>
+            <?php $cpt = generateCode();?>
             <span class="label-input100"><?=$cpt['text'];?></span>
             <input type="hidden" name="rescpt" id="rescpt" value="<?=$cpt['res']?>" />
           </div>

@@ -189,6 +189,7 @@ class User_access extends CI_Controller
         // $iduseraccess = $this->input->post('iduseraccess', TRUE);die($iduseraccess);
         $kdmasteraccess = $this->input->post('kdmasteraccess', TRUE);
         $idgroup = $this->input->post('idgroup', TRUE);
+        $idmenu = $this->input->post('idmenu', TRUE);
         
         if ($this->User_access_model->existing($idgroup,$kdmasteraccess)) {
 // die($isradiocheck);
@@ -196,11 +197,12 @@ class User_access extends CI_Controller
             //die($iduseraccess);
             $data = array(
                 'is_allow'=>$isradiocheck,
+                'id_menu' =>$idmenu
         );
 
             $this->User_access_model->update($iduseraccess, $data);
         }else{
-            $this->User_access_model->insert(array('id_group'=>$idgroup,'kd_access'=>$kdmasteraccess,'is_allow'=>1));
+            $this->User_access_model->insert(array('id_group'=>$idgroup,'kd_access'=>$kdmasteraccess,'is_allow'=>1,'id_menu'=>$idmenu));
         }
            
         

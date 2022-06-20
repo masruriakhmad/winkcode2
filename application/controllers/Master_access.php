@@ -12,6 +12,7 @@ class Master_access extends CI_Controller
             redirect(site_url('Auth'));
         }
         $this->load->model('Master_access_model');
+        $this->load->model('Sy_menu_model');
         $this->load->library('form_validation');
     }
 
@@ -73,6 +74,7 @@ class Master_access extends CI_Controller
             'action' => site_url('master_access/create_action'),
 	    'id' => set_value('id'),
 	    'nm_access' => set_value('nm_access'),
+	    'id_menu' => $this->Sy_menu_model->get_all(),
 	    'note' => set_value('note'),
 	    'created_at' => set_value('created_at'),
 	    'created_by' => set_value('created_by'),
@@ -93,6 +95,7 @@ class Master_access extends CI_Controller
 		'note' => $this->input->post('note',TRUE),
 		'created_at' => date("Y-m-d H:i:s"),
 		'created_by' => $this->session->userdata('id_user'),
+		'id_menu' => $this->input->post('id_menu',TRUE),
 	    );
 
             $this->Master_access_model->insert($data);

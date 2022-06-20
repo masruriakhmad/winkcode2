@@ -60,7 +60,7 @@
 			<td><?php echo $user_access->note ?></td>
             <td align="center"><!-- Rounded switch -->
 <label class="switch">
-  <input type="checkbox" id="cek-<?=$user_access->id?>" onclick="aktifkan(<?=$user_access->id?>,<?=$user_access->id_user_group?>,<?=$user_access->id_master_access?>)" <?=$this->User_access_model->get_isallow($user_access->id_user_group,$user_access->id_master_access)?"checked":"";?> class="onoffswitch-checkbox"/>
+  <input type="checkbox" id="cek-<?=$user_access->id?>" onclick="aktifkan(<?=$user_access->id?>,<?=$user_access->id_user_group?>,<?=$user_access->id_master_access?>,<?=$user_access->id_menu?>)" <?=$this->User_access_model->get_isallow($user_access->id_user_group,$user_access->id_master_access)?"checked":"";?> class="onoffswitch-checkbox"/>
   <span class="slider round"></span>
 </label></td>
 		</tr>
@@ -85,14 +85,14 @@
     </div>
     </body>
     <script type="text/javascript">
-        function aktifkan(iduseraccess,idgroup,kdmasteraccess){
+        function aktifkan(iduseraccess,idgroup,kdmasteraccess,idmenu){
             if($('#cek-'+iduseraccess).is(':checked')){
                 ischeck=1;
             }else{
                 ischeck=0;
             }
-            //alert(ischeck);
-            $.post("<?=base_url().'user_access/aktifkan'?>", {iduseraccess: iduseraccess,idgroup:idgroup,kdmasteraccess:kdmasteraccess,ischeck:ischeck}, function(data, textStatus, xhr) {
+            //alert(ischeck);<!--menuju ke controller user_acces fungsi aktifkan-->
+            $.post("<?=base_url().'user_access/aktifkan'?>", {iduseraccess: iduseraccess,idgroup:idgroup,kdmasteraccess:kdmasteraccess,idmenu:idmenu,ischeck:ischeck}, function(data, textStatus, xhr) {
                 toastr.success("Telah diaktifkan",iduseraccess);
             });
         }
